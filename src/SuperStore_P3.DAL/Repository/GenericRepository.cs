@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SuperStore_P3.BLL.Repository
+namespace SuperStore_P3.DAL.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {

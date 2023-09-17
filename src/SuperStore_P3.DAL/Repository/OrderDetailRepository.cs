@@ -2,7 +2,7 @@
 using Models;
 using System.Linq;
 
-namespace SuperStore_P3.BLL.Repository
+namespace SuperStore_P3.DAL.Repository
 {
     public class OrderDetailRepository : GenericRepository<OrderDetail>, IOrderDetailRepository
     {
