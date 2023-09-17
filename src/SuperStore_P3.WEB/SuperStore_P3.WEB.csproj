@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-SuperStore_P3-4790db7e-c547-44ea-af49-d773fdd3ae67</UserSecretsId>
-    <RootNamespace>EcoPower_Logistics</RootNamespace>
+    <RootNamespace>SuperStore_P3.WEB</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +22,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.21" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SuperStore_P3.DAL\SuperStore_P3.DAL.csproj" />
   </ItemGroup>
 
 </Project>
