@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using SuperStore_P3.BLL.Repository;
+using SuperStore_P3.DAL.Repository;
 using System.Linq.Expressions;
 
 namespace Controllers
@@ -18,12 +18,12 @@ namespace Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var results = _productRepository.GetAll().AsQueryable();
+            var results = _productRepository.GetAll();
 
             return View(results) != null ?
-                        View(await results.ToListAsync()) :
+                        View(results.ToList()) :
                         Problem("Entity set 'SuperStoreContext.Products'  is null.");
         }
 
