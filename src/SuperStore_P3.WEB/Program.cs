@@ -1,7 +1,7 @@
 using Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SuperStore_P3.BLL.Repository;
+using SuperStore_P3.DAL.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
