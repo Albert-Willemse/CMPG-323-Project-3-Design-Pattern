@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SuperStore_P3.BLL\SuperStore_P3.BLL.csproj" />
     <ProjectReference Include="..\SuperStore_P3.DAL\SuperStore_P3.DAL.csproj" />
   </ItemGroup>
 
