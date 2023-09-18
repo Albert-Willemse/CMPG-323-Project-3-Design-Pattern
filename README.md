@@ -107,17 +107,16 @@ After successfully logging in, you should have access to the tables for managing
 <img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/6aff5718-faec-44f8-ba9d-e84734a30dd8" alt="Image" width="75%" />
 
 
-
 ## Design Pattern
 
-### Repository Pattern:
+### Tier 1 - Repo Classes:
 
 The Repository Pattern plays a pivotal role by segregating data access logic from the application's core business logic. It provides a standardized and reusable approach for interacting with the underlying data source, which, in this case, is a database. This separation enhances code modularity and maintainability, as data operations are neatly encapsulated within dedicated repositories for Customers, Products, Orders, and Order Details. 
 
-### Generic Repository
+### Tier 2 - Generic Repo, Repo Classes & Interfaces
 What makes this pattern even more efficient is the incorporation of a Generic Repository, which greatly reduces redundant code. The GenericRepository class is a concrete implementation of the IGenericRepository interface. It eliminates the need for repetitive data access code, offering a consistent and reusable way to interact with different data entities within the application. This efficient design not only reduces redundancy but also simplifies data access across various sections of the project.
 
-### 3-Tier Architecture:
+### Tier 3 - Division Between Projects:
 
 The SuperStore_P3 project adheres to the 3-Tier Architecture, providing a clear division of responsibilities among its layers:
 
