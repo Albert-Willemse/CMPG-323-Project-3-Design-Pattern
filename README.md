@@ -1,6 +1,7 @@
 # CMPG-323-Project-3-38205742
 Apply Design Pattern to an existing project and host the Web App on the Cloud. This project aims to teach me how to adapt existing code and apply design patterns effectively.
 
+**Table of Contents**
 1. [Demo](#demo)
 2. [Features](#features)
 3. [Usage](#usage)
@@ -22,6 +23,8 @@ Apply Design Pattern to an existing project and host the Web App on the Cloud. T
 
 [EcoPower Logistics WebApp](https://superstorep3service.azurewebsites.net/)
 
+[Azure WebApp Sevice](https://portal.azure.com/#@nwuac.onmicrosoft.com/resource/subscriptions/ae904fbb-19de-40d3-8dba-264680e542a8/resourceGroups/rgP3WEBAPP/overview)
+
 ## Features
 
 Key features of the EcoPower Logistics Web App include:
@@ -36,7 +39,7 @@ Key features of the EcoPower Logistics Web App include:
 <img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/665c02ba-d597-416d-95df-7c38efe1a352" alt="image" width="75%">
 
 
-**1. Register an Account**:
+### 1. Register an Account:
 
 1. Open the web application using the provided Demo Link.
 2. On the homepage, locate the "_Register_" link or button on the top navigation bar.
@@ -47,7 +50,7 @@ Key features of the EcoPower Logistics Web App include:
 <img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/aef34c3d-d90e-4ec8-ba7a-3b7ff6ff9a3f" alt="Image Description" width="75%" />
 
 
-**2. Log In**:
+### 2. Log In:
 
 1. Locate the "_Login_" link or button on the top navigation bar.
 2. Enter your registered email address and password.
@@ -56,7 +59,7 @@ Key features of the EcoPower Logistics Web App include:
 <img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/af93cf5b-e66f-40dc-b8bb-c677d20b2687" alt="Image" width="75%" />
 
 
-**3. Access the Tables**:
+### 3. Access the Tables:
 
 After successfully logging in, you should have access to the tables for managing customers, orders, order details and products.
 
@@ -64,7 +67,7 @@ After successfully logging in, you should have access to the tables for managing
 
 
 
-**3.1 Customer Management**:
+#### 3.1 Customer Management:
 
 1. Navigate to the "_Customers_" section on the topbar.
 2. Click "_Create New_" to add a new customer.
@@ -73,7 +76,7 @@ After successfully logging in, you should have access to the tables for managing
 
 <img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/d7dd6be0-90c0-4c97-9487-7350774f5d44" alt="Image" width="75%" />
 
-**3.2 Order Management**:
+#### 3.2 Order Management:
 
 1. Navigate to the "_Orders_" section on the topbar.
 2. Click "_Create New_" to add a new order.
@@ -82,7 +85,7 @@ After successfully logging in, you should have access to the tables for managing
 
 <img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/36b55b39-5fbd-4e1c-847a-d1580ac1d760" alt="Image" width="75%" />
    
-**3.3 OrderDetails Management**:
+#### 3.3 OrderDetails Management:
 
 1. Navigate to the "_OrderDetails_" section on the topbar.
 2. Click "_Create New_" to add a new orderdetails.
@@ -93,7 +96,7 @@ After successfully logging in, you should have access to the tables for managing
 
 
 
-**3.4 Product Management**:
+#### 3.4 Product Management:
 
 1. Navigate to the "_Products_" section on the topbar.
 2. Click "_Create New_" to add a new product.
