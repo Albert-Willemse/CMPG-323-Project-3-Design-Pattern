@@ -9,9 +9,9 @@ namespace SuperStore_P3.DAL.Repository
     {
         T GetById(int? id);
 
-        IEnumerable<T> GetAll();
+        IQueryable<T> GetAll();
 
-        IEnumerable<T> Find(Expression<Func<T, bool>> expression);
+        IQueryable<T> Find(Expression<Func<T, bool>> expression);
 
         void Add(T entity);
 
