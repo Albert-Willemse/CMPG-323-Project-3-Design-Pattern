@@ -126,7 +126,7 @@ The SuperStore_P3 project adheres to the 3-Tier Architecture, providing a clear 
 - **Data Access Layer (SuperStore_P3.DAL)**: In addition to managing data interactions with the database, this layer integrates the Repository Pattern, especially the Generic Repository, to ensure a high level of code efficiency and reusability.
 
 
-<img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/7f842528-bdd2-4d43-ad29-e6ce4a817a8b" alt="Image" width="25%" />
+<img src="https://github.com/Albert-Willemse/CMPG-323-Project-3-38205742/assets/112475881/7f842528-bdd2-4d43-ad29-e6ce4a817a8b" alt="Image" width="35%" />
 
 
 
