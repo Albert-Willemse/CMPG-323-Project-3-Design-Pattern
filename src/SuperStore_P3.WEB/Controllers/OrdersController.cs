@@ -8,37 +8,49 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Data;
+using SuperStore_P3.DAL.Repository;
 
 namespace Controllers
 {
     [Authorize]
     public class OrdersController : Controller
     {
-        private readonly SuperStoreContext _context;
+        private readonly IOrderRepository _orderRepository;
+        private readonly ICustomerRepository _customerRepository;
 
-        public OrdersController(SuperStoreContext context)
+        public OrdersController(IOrderRepository orderRepository, ICustomerRepository customerRepository)
         {
-            _context = context;
+            _orderRepository = orderRepository;
+            _customerRepository = customerRepository;
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var superStoreContext = _context.Orders.Include(o => o.Customer);
-            return View(await superStoreContext.ToListAsync());
+            var results = _orderRepository
+            .GetAll()
+            .Include(o => o.Customer) // Eager load the Customer navigation property
+            .ToList();
+
+            return View(results) != null ?
+                        View(results.ToList()) :
+                        Problem("Entity set 'SuperStoreContext.Orders'  is null.");
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _orderRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
+            // Use _orderRepository to query the database and include the Customer
+            var order = _orderRepository
+                .GetAll()
+                .Include(o => o.Customer) // Eager load the Customer navigation property
+                .FirstOrDefault(o => o.OrderId == id);
+
             if (order == null)
             {
                 return NotFound();
@@ -50,7 +62,7 @@ namespace Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
+            ViewData["CustomerId"] = new SelectList(_customerRepository.GetAll(), "CustomerId", "CustomerName");
             return View();
         }
 
@@ -59,32 +71,40 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
+        public IActionResult Create([Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
         {
-            if (ModelState.IsValid)
+            
+            // Associate the selected customer with the order
+            var selectedCustomerId = order.CustomerId;
+            var selectedCustomer = _customerRepository.GetById(selectedCustomerId);
+            if (selectedCustomer != null)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
+                order.Customer = selectedCustomer;
+                _orderRepository.Add(order);
+                _orderRepository.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+
+            
+            ViewData["CustomerId"] = new SelectList(_customerRepository.GetAll(), "CustomerId", "CustomerName", order.CustomerId);
             return View(order);
         }
 
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _orderRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var order = _orderRepository.GetById(id);
+
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList(_customerRepository.GetAll(), "CustomerId", "CustomerName", order.CustomerId);
             return View(order);
         }
 
@@ -93,19 +113,22 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
+        public IActionResult Edit(int id, [Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
         {
             if (id != order.OrderId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // Associate the selected customer with the order
+            var selectedCustomerId = order.CustomerId;
+            var selectedCustomer = _customerRepository.GetById(selectedCustomerId);
+            if (selectedCustomer != null)
             {
                 try
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
+                    _orderRepository.Update(order);
+                    _orderRepository.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,19 +143,22 @@ namespace Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            
+            
+            ViewData["CustomerId"] = new SelectList(_customerRepository.GetAll(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
         // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _orderRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
+            
+            var order = await _orderRepository.GetAll()
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
@@ -146,25 +172,25 @@ namespace Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            if (_context.Orders == null)
+            if (_orderRepository.GetAll() == null)
             {
                 return Problem("Entity set 'SuperStoreContext.Orders'  is null.");
             }
-            var order = await _context.Orders.FindAsync(id);
+            var order = _orderRepository.GetById(id);
             if (order != null)
             {
-                _context.Orders.Remove(order);
+                _orderRepository.Remove(order);
             }
 
-            await _context.SaveChangesAsync();
+            _orderRepository.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrderExists(int id)
         {
-            return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
+            return (_orderRepository.GetAll()?.Any(e => e.OrderId == id)).GetValueOrDefault();
         }
     }
 }

@@ -8,35 +8,41 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Models;
+using SuperStore_P3.DAL.Repository;
 
 namespace Controllers
 {
     [Authorize]
     public class OrderDetailsController : Controller
     {
-        private readonly SuperStoreContext _context;
+        private readonly IOrderDetailRepository _orderDetailsRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
 
-        public OrderDetailsController(SuperStoreContext context)
+
+        public OrderDetailsController(IOrderDetailRepository orderDetailsRepository, IOrderRepository orderRepository, IProductRepository productRepository)
         {
-            _context = context;
+            _orderDetailsRepository = orderDetailsRepository;
+            _orderRepository = orderRepository;
+            _productRepository = productRepository;
         }
 
         // GET: OrderDetails
         public async Task<IActionResult> Index()
         {
-            var superStoreContext = _context.OrderDetails.Include(o => o.Order).Include(o => o.Product);
+            var superStoreContext = _orderDetailsRepository.GetAll().Include(o => o.Order).Include(o => o.Product);
             return View(await superStoreContext.ToListAsync());
         }
 
         // GET: OrderDetails/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _orderDetailsRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var orderDetail = await _context.OrderDetails
+            var orderDetail = await _orderDetailsRepository.GetAll()
                 .Include(o => o.Order)
                 .Include(o => o.Product)
                 .FirstOrDefaultAsync(m => m.OrderDetailsId == id);
@@ -51,8 +57,8 @@ namespace Controllers
         // GET: OrderDetails/Create
         public IActionResult Create()
         {
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId");
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId");
+            ViewData["OrderId"] = new SelectList(_orderRepository.GetAll(), "OrderId", "OrderId");
+            ViewData["ProductId"] = new SelectList(_productRepository.GetAll(), "ProductId", "ProductName");
             return View();
         }
 
@@ -61,34 +67,46 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderDetailsId,OrderId,ProductId,Quantity,Discount")] OrderDetail orderDetail)
+        public IActionResult Create([Bind("OrderDetailsId,OrderId,ProductId,Quantity,Discount")] OrderDetail orderDetail)
         {
-            if (ModelState.IsValid)
+            // Associate the selected order with the orderdetails
+            var selectedOrderId = orderDetail.OrderId;
+            var selectedOrder = _orderRepository.GetById(selectedOrderId);
+
+            // Associate the selected product with the orderdetails
+            var selectedProductId = orderDetail.ProductId;
+            var selectedProduct = _productRepository.GetById(selectedProductId);
+
+            if (selectedOrder != null && selectedProduct != null)
             {
-                _context.Add(orderDetail);
-                await _context.SaveChangesAsync();
+
+                orderDetail.Order = selectedOrder;
+                orderDetail.Product = selectedProduct;
+
+                _orderDetailsRepository.Add(orderDetail);
+                _orderDetailsRepository.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", orderDetail.ProductId);
+            ViewData["OrderId"] = new SelectList(_orderRepository.GetAll(), "OrderId", "OrderId");
+            ViewData["ProductId"] = new SelectList(_productRepository.GetAll(), "ProductId", "ProductName");
             return View(orderDetail);
         }
 
         // GET: OrderDetails/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _orderDetailsRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var orderDetail = await _context.OrderDetails.FindAsync(id);
+            var orderDetail = _orderDetailsRepository.GetById(id);
             if (orderDetail == null)
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", orderDetail.ProductId);
+            ViewData["OrderId"] = new SelectList(_orderRepository.GetAll(), "OrderId", "OrderId");
+            ViewData["ProductId"] = new SelectList(_productRepository.GetAll(), "ProductId", "ProductName");
             return View(orderDetail);
         }
 
@@ -97,19 +115,30 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderDetailsId,OrderId,ProductId,Quantity,Discount")] OrderDetail orderDetail)
+        public IActionResult Edit(int id, [Bind("OrderDetailsId,OrderId,ProductId,Quantity,Discount")] OrderDetail orderDetail)
         {
             if (id != orderDetail.OrderDetailsId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // Associate the selected order with the orderdetails
+            var selectedOrderId = orderDetail.OrderId;
+            var selectedOrder = _orderRepository.GetById(selectedOrderId);
+
+            // Associate the selected product with the orderdetails
+            var selectedProductId = orderDetail.ProductId;
+            var selectedProduct = _productRepository.GetById(selectedProductId);
+
+            if (selectedOrder != null && selectedProduct != null)
             {
                 try
                 {
-                    _context.Update(orderDetail);
-                    await _context.SaveChangesAsync();
+                    orderDetail.Order = selectedOrder;
+                    orderDetail.Product = selectedProduct;
+
+                    _orderDetailsRepository.Update(orderDetail);
+                    _orderDetailsRepository.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,20 +153,21 @@ namespace Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", orderDetail.ProductId);
+
+            ViewData["OrderId"] = new SelectList(_orderRepository.GetAll(), "OrderId", "OrderId");
+            ViewData["ProductId"] = new SelectList(_productRepository.GetAll(), "ProductId", "ProductName");
             return View(orderDetail);
         }
 
         // GET: OrderDetails/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _orderDetailsRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var orderDetail = await _context.OrderDetails
+            var orderDetail = await _orderDetailsRepository.GetAll()
                 .Include(o => o.Order)
                 .Include(o => o.Product)
                 .FirstOrDefaultAsync(m => m.OrderDetailsId == id);
@@ -152,25 +182,25 @@ namespace Controllers
         // POST: OrderDetails/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            if (_context.OrderDetails == null)
+            if (_orderDetailsRepository.GetAll() == null)
             {
                 return Problem("Entity set 'SuperStoreContext.OrderDetails'  is null.");
             }
-            var orderDetail = await _context.OrderDetails.FindAsync(id);
+            var orderDetail = _orderDetailsRepository.GetById(id);
             if (orderDetail != null)
             {
-                _context.OrderDetails.Remove(orderDetail);
+                _orderDetailsRepository.Remove(orderDetail);
             }
 
-            await _context.SaveChangesAsync();
+            _orderDetailsRepository.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrderDetailExists(int id)
         {
-            return (_context.OrderDetails?.Any(e => e.OrderDetailsId == id)).GetValueOrDefault();
+            return (_orderDetailsRepository.GetAll()?.Any(e => e.OrderDetailsId == id)).GetValueOrDefault();
         }
     }
 }
