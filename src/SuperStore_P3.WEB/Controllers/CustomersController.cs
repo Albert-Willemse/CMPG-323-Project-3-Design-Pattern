@@ -164,11 +164,7 @@ namespace Controllers
 
         private bool CustomerExists(int id)
         {
-            // Create an expression to filter customers by their ID
-            Expression<Func<Customer, bool>> filter = customer => customer.CustomerId == id;
-
-            // Use the filter expression in your repository's Find method
-            return _customerRepository.Find(filter).Any();
+            return (_customerRepository.GetAll()?.Any(e => e.CustomerId == id)).GetValueOrDefault();
         }
     }
 }

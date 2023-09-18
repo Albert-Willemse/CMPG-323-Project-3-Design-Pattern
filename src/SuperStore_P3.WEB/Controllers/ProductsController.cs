@@ -159,11 +159,7 @@ namespace Controllers
 
         private bool ProductExists(int id)
         {
-            // Create an expression to filter products by their ID
-            Expression<Func<Product, bool>> filter = product => product.ProductId == id;
-
-            // Use the filter expression in your repository's Find method
-            return _productRepository.Find(filter).Any();
+            return (_productRepository.GetAll()?.Any(e => e.ProductId == id)).GetValueOrDefault();
         }
     }
 }
