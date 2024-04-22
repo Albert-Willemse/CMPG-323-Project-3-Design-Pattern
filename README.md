@@ -1,4 +1,4 @@
-# CMPG-323-Project-3-38205742
+# CMPG-323-Project-3-Design-Pattern
 Apply Design Pattern to an existing project and host the Web App on the Cloud. This project aims to teach me how to adapt existing code and apply design patterns effectively.
 
 **Table of Contents**
@@ -21,7 +21,7 @@ Apply Design Pattern to an existing project and host the Web App on the Cloud. T
 
 ## Demo
 
-[EcoPower Logistics WebApp](https://superstorep3service.azurewebsites.net/)
+[EcoPower Logistics WebApp](https://superstorep3service.azurewebsites.net/)  - (Database offline)
 
 [Azure WebApp Sevice](https://portal.azure.com/#@nwuac.onmicrosoft.com/resource/subscriptions/ae904fbb-19de-40d3-8dba-264680e542a8/resourceGroups/rgP3WEBAPP/overview)
 
